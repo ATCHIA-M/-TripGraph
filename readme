@@ -1,0 +1,96 @@
+# 🧭 TripGraph: Travel Planner using Graph Data Structures
+
+A travel planner that models a road network as a weighted graph and solves routing problems with classic data structures and algorithms. Every data structure (graph, min-heap, queue, stack, union-find) is **implemented from scratch** in Python, with no `networkx` or `heapq`.
+
+Course project: Data Structures Lab, Dept. of AI & DS, Francis Xavier Engineering College.
+
+---
+
+## Features
+
+| Feature                                                 | Algorithm                           | Data structure used                           |
+| ------------------------------------------------------- | ----------------------------------- | --------------------------------------------- |
+| Shortest route by distance, time or cost                | Dijkstra                            | Min-heap priority queue                       |
+| Route with fewest stops                                 | BFS                                 | Linked-list queue                             |
+| Alternative routes, ranked                              | DFS with backtracking               | Linked-list stack                             |
+| Cheapest road network connecting all cities             | Kruskal's MST                       | Union-Find (path compression + union by rank) |
+| Best order to visit multiple cities                     | Held-Karp dynamic programming (TSP) | Bitmask DP table                              |
+| Road closure simulation and disconnected-city detection | BFS components                      | Queue                                         |
+| Road network storage                                    | Adjacency list                      | Dict of dicts                                 |
+
+The dashboard also draws all routes on an interactive map.
+
+## Project structure
+
+```
+.
+├── travel_core.py    # Data structures + algorithms + sample road network
+├── app.py            # Streamlit dashboard
+└── README.md
+```
+
+## Requirements
+
+- Python 3.9 or newer
+- Packages: `streamlit`, `plotly`, `pandas`
+
+```bash
+pip install streamlit plotly pandas
+```
+
+`travel_core.py` itself uses only the Python standard library.
+
+## How to run
+
+```bash
+streamlit run app.py
+```
+
+The app opens at `http://localhost:8501`. No dataset download is needed because the road network is built into `travel_core.py`.
+
+## Using the dashboard
+
+- **Sidebar:** choose what to optimise (distance, time or cost) and close roads to simulate blockages
+- **Route Finder:** pick two cities to see the best route (Dijkstra) and the fewest-stops route (BFS)
+- **Alternative Routes:** all routes up to a chosen length, ranked, with the top 3 on the map
+- **Multi-Stop Trip Planner:** pick a start city and several stops to get the best visiting order
+- **Road Network (MST):** the cheapest set of roads that connects every city
+
+## Using the core module without the dashboard
+
+```python
+from travel_core import build_sample_graph, dijkstra, plan_trip, kruskal_mst
+
+g = build_sample_graph()
+
+print(dijkstra(g, "Chennai", "Kanyakumari", "km"))
+# (710, ['Chennai', 'Tiruchirappalli', 'Madurai', 'Kanyakumari'])
+
+print(plan_trip(g, "Chennai", ["Madurai", "Kochi", "Mysuru", "Tirupati"], "km"))
+
+mst, total = kruskal_mst(g, "km")
+```
+
+Criteria keys: `"km"` (distance), `"hrs"` (time), `"cost"` (Rs).
+
+## Complexity
+
+| Algorithm                  | Time                                                  |
+| -------------------------- | ----------------------------------------------------- |
+| Dijkstra (min-heap)        | O((V + E) log V)                                      |
+| BFS / connected components | O(V + E)                                              |
+| DFS (all simple routes)    | Exponential in the worst case, so a hop limit is used |
+| Kruskal (union-find)       | O(E log E)                                            |
+| Held-Karp (n stops)        | O(2ⁿ · n²), limited to 10 stops                       |
+
+## About the data
+
+The network has **14 South Indian cities** and **23 roads**. Distances, travel times and tolls are **approximate sample values**, not live road data. Cost per road is calculated as 5 Rs/km for fuel plus the toll. To use your own network, edit the `CITIES` and `ROADS` lists in `travel_core.py`.
+
+## Future scope
+
+Real map data (OpenStreetMap), A\* search, live traffic, multiple transport modes, larger networks, heuristic TSP for more than 10 stops, saved itineraries, cloud deployment.
+
+## Author
+
+ATCHIA M
